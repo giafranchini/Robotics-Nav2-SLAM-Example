@@ -13,9 +13,11 @@ setup(
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name), [
+                                                'behaviour_tree/follow_point.xml',
+                                                'launch/unity_slam_example.launch.py',
+                                                'launch/unity_viz_example.launch.py',
+                                                'params/nav2_unity.yaml',
                                                 'rviz/nav2_unity.rviz',
-                                                'launch/unity_slam_example.py',
-                                                'launch/unity_viz_example.py'
                                                 ])
     ],
     install_requires=['setuptools'],

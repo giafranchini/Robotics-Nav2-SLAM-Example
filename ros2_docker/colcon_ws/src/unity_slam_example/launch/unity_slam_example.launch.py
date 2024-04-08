@@ -13,7 +13,7 @@ def generate_launch_description():
     return LaunchDescription({
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('ros_tcp_endpoint'), 'launch', 'endpoint.py')
+                os.path.join(get_package_share_directory('ros_tcp_endpoint'), 'launch', 'endpoint.launch.py')
             ),
         ),
 
@@ -31,7 +31,8 @@ def generate_launch_description():
                 os.path.join(get_package_share_directory('nav2_bringup'), 'launch', 'navigation_launch.py')
             ),
             launch_arguments={
-                'use_sim_time': 'true'
+                'use_sim_time': 'true',
+                'params_file': os.path.join(package_dir, 'nav2_unity.yaml')
             }.items()
         ),
 
