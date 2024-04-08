@@ -851,8 +851,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topicName: goal_update
-  Cube: {fileID: 1836622548}
   publishMessageFrequency: 10
+  m_GlobalFrameIds:
+  - map
+  - odom
+  obj: {fileID: 0}
+  goal2D: 1
 --- !u!1 &1379660451
 GameObject:
   m_ObjectHideFlags: 0

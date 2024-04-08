@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Unity.Robotics.Core;
 using Unity.Robotics.ROSTCPConnector;
+using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using RosMessageTypes.Std;
 using RosMessageTypes.Geometry;
 using RosMessageTypes.BuiltinInterfaces;
@@ -9,18 +14,14 @@ public class ROSPosePublisher : MonoBehaviour
 {
     ROSConnection ros;
     public string topicName = "goal_update";
-
-    // The game object
-    public GameObject Cube;
-    // Publish the cube's position and rotation every N seconds
     public float publishMessageFrequency = 0.5f;
-
-    // Used to determine how much time has elapsed since the last message was published
+    public List<string> m_GlobalFrameIds = new List<string> { "map", "odom" };
+    public GameObject obj;
+    public bool goal2D = true; 
     private float timeElapsed;
 
     void Start()
     {
-        // start the ROS connection
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<PoseStampedMsg>(topicName);
     }
@@ -31,16 +32,27 @@ public class ROSPosePublisher : MonoBehaviour
 
         if (timeElapsed > publishMessageFrequency)
         {
-            PoseStampedMsg avatarPose = new PoseStampedMsg(
-                new HeaderMsg(new TimeMsg(), "map"),
+            Vector3 objPos = obj.transform.position;
+            Quaternion objRot = obj.transform.rotation;
+
+            if (goal2D)
+            {
+                objPos.y = 0;
+                Vector3 objRotEuler = objRot.eulerAngles;
+                objRotEuler.x = 0;
+                objRotEuler.z = 0;
+                objRot = Quaternion.Euler(objRotEuler);
+            }
+
+            PoseStampedMsg objPose = new PoseStampedMsg(
+                new HeaderMsg(new TimeStamp(Clock.time), m_GlobalFrameIds.Last()),
                 new PoseMsg(
-                    new PointMsg(Cube.transform.position.x, Cube.transform.position.y, Cube.transform.position.z),
-                    new QuaternionMsg(Cube.transform.rotation.x, Cube.transform.rotation.y, Cube.transform.rotation.z, Cube.transform.rotation.w)
+                    objPos.To<FLU>(),
+                    objRot.To<FLU>()
                 )
             );
 
-            // Finally send the message to server_endpoint.py running in ROS
-            ros.Publish(topicName, avatarPose);
+            ros.Publish(topicName, objPose);
 
             timeElapsed = 0;
         }
