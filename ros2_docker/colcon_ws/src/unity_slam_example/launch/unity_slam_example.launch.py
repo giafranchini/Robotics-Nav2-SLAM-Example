@@ -32,7 +32,7 @@ def generate_launch_description():
             ),
             launch_arguments={
                 'use_sim_time': 'true',
-                'params_file': os.path.join(package_dir, 'nav2_unity.yaml')
+                'params_file': os.path.join(package_dir, 'nav2_unity_jackal.yaml')
             }.items()
         ),
 
@@ -41,7 +41,8 @@ def generate_launch_description():
                 os.path.join(get_package_share_directory('slam_toolbox'), 'launch', 'online_async_launch.py')
             ),
             launch_arguments={
-                'use_sim_time': 'true'
+                'use_sim_time': 'true',
+                'slam_params_file': os.path.join(package_dir, 'slam_unity_jackal.yaml')
             }.items()
         )
     })

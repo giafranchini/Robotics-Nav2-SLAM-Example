@@ -16,7 +16,9 @@ setup(
                                                 'behaviour_tree/follow_point.xml',
                                                 'launch/unity_slam_example.launch.py',
                                                 'launch/unity_viz_example.launch.py',
-                                                'params/nav2_unity.yaml',
+                                                'params/nav2_unity_jackal.yaml',
+                                                'params/nav2_unity_tb.yaml',
+                                                'params/slam_unity_jackal.yaml',
                                                 'rviz/nav2_unity.rviz',
                                                 ])
     ],
