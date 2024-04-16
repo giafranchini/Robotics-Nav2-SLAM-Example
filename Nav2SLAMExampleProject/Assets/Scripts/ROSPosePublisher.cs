@@ -16,9 +16,11 @@ public class ROSPosePublisher : MonoBehaviour
     public string topicName = "goal_update";
     public float publishMessageFrequency = 0.5f;
     public List<string> m_GlobalFrameIds = new List<string> { "map", "odom" };
-    public GameObject obj;
     public bool goal2D = true; 
+    public GameObject followTarget;
+    public GameObject poseTarget;
     private float timeElapsed;
+    private bool shouldPublish = false;
 
     void Start()
     {
@@ -32,29 +34,51 @@ public class ROSPosePublisher : MonoBehaviour
 
         if (timeElapsed > publishMessageFrequency)
         {
-            Vector3 objPos = obj.transform.position;
-            Quaternion objRot = obj.transform.rotation;
+            Vector3 objPos = new Vector3();
+            Quaternion objRot = new Quaternion();
 
-            if (goal2D)
+            if (Input.GetButtonDown("Jump"))
             {
-                objPos.y = 0;
-                Vector3 objRotEuler = objRot.eulerAngles;
-                objRotEuler.x = 0;
-                objRotEuler.z = 0;
-                objRot = Quaternion.Euler(objRotEuler);
+                Debug.Log("Follow");
+                objPos = followTarget.transform.position;
+                objRot = followTarget.transform.rotation;
+                shouldPublish = true;
+            }
+            
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Debug.Log("GoToPose");
+                objPos = poseTarget.transform.position;
+                objRot = poseTarget.transform.rotation;
+                shouldPublish = true;
+            }                                                                                                                                   
+
+            if (!shouldPublish) {return;}
+            
+            if (Input.GetButtonDown("Fire2"))
+            {
+                if (goal2D)
+                {
+                    objPos.y = 0;
+                    Vector3 objRotEuler = objRot.eulerAngles;
+                    objRotEuler.x = 0;
+                    objRotEuler.z = 0;
+                    objRot = Quaternion.Euler(objRotEuler);
+                }
+
+                PoseStampedMsg objPose = new PoseStampedMsg(
+                    new HeaderMsg(new TimeStamp(Clock.time), m_GlobalFrameIds.Last()),
+                    new PoseMsg(
+                        objPos.To<FLU>(),
+                        objRot.To<FLU>()
+                    )
+                );
+
+                ros.Publish(topicName, objPose);
             }
 
-            PoseStampedMsg objPose = new PoseStampedMsg(
-                new HeaderMsg(new TimeStamp(Clock.time), m_GlobalFrameIds.Last()),
-                new PoseMsg(
-                    objPos.To<FLU>(),
-                    objRot.To<FLU>()
-                )
-            );
-
-            ros.Publish(topicName, objPose);
-
             timeElapsed = 0;
+            shouldPublish = false;
         }
     }
 }

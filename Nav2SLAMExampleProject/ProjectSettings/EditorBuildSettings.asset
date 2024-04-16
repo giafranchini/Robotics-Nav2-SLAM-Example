@@ -15,5 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Test/SimpleObstacleCourse.unity
     guid: 3ac50540e9c5fc4408b358ac551a7fea
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 6e675bfc9dd07e60195c67e560438f29, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 74f8866a90bdd4847a521a9e0d534af9, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 05402c3d924650c47b48d4ee869fef61, type: 2}
